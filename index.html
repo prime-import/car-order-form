@@ -6,63 +6,109 @@
 <title>Заказать авто</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    background: #f8f8f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
     display: flex;
     justify-content: center;
-    padding: 40px 20px;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
   }
+
   .form-container {
     background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     max-width: 400px;
     width: 100%;
+    animation: fadeIn 1s ease;
   }
+
+  @keyframes fadeIn {
+    from {opacity:0; transform: translateY(-20px);}
+    to {opacity:1; transform: translateY(0);}
+  }
+
   .form-container h2 {
     text-align: center;
     margin-bottom: 25px;
     color: #333;
+    font-size: 24px;
   }
+
   form input, form select, form button {
     width: 100%;
-    padding: 12px 15px;
+    padding: 14px 18px;
     margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+    border-radius: 10px;
+    border: 1px solid #ddd;
     font-size: 16px;
     box-sizing: border-box;
+    transition: 0.3s;
   }
+
+  form input:focus, form select:focus {
+    border-color: #ff6b00;
+    outline: none;
+    box-shadow: 0 0 8px rgba(255,107,0,0.3);
+  }
+
   form button {
     background-color: #ff6b00;
     color: #fff;
     font-weight: bold;
     border: none;
     cursor: pointer;
-    transition: background 0.3s;
+    font-size: 18px;
+    transition: background 0.3s, transform 0.2s;
   }
+
   form button:hover {
     background-color: #e65b00;
+    transform: translateY(-2px);
+  }
+
+  form label {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
   }
 </style>
 </head>
 <body>
+
 <div class="form-container">
   <h2>Заказать авто</h2>
   <form id="carOrderForm">
-    <input type="text" id="name" placeholder="Имя" required>
-    <input type="tel" id="phone" placeholder="Телефон" required>
-    <input type="email" id="email" placeholder="Email (опционально)">
+    <label>Имя</label>
+    <input type="text" id="name" placeholder="Ваше имя" required>
+
+    <label>Телефон</label>
+    <input type="tel" id="phone" placeholder="+7 (___) ___-__-__" required>
+
+    <label>Telegram</label>
+    <input type="text" id="telegram" placeholder="@username или ссылка">
+
+    <label>Email (опционально)</label>
+    <input type="email" id="email" placeholder="example@mail.com">
+
+    <label>Выберите страну доставки</label>
     <select id="country" required>
-      <option value="">Выберите страну доставки</option>
+      <option value="">Выберите страну</option>
       <option value="Корея">Корея</option>
       <option value="Китай">Китай</option>
       <option value="США">США</option>
       <option value="Другое">Другое</option>
     </select>
-    <input type="text" id="car" placeholder="Марка / модель авто" required>
-    <input type="number" id="budget" placeholder="Бюджет, $" required>
+
+    <label>Марка / модель авто</label>
+    <input type="text" id="car" placeholder="Например: Toyota Camry" required>
+
+    <label>Бюджет (в рублях)</label>
+    <input type="number" id="budget" placeholder="Например: 3 000 000" required>
+
     <button type="submit">Отправить заявку</button>
   </form>
 </div>
@@ -77,6 +123,7 @@ form.addEventListener('submit', async (e) => {
   const data = {
     name: document.getElementById('name').value,
     phone: document.getElementById('phone').value,
+    telegram: document.getElementById('telegram').value,
     email: document.getElementById('email').value,
     country: document.getElementById('country').value,
     car: document.getElementById('car').value,
@@ -105,5 +152,6 @@ form.addEventListener('submit', async (e) => {
   }
 });
 </script>
+
 </body>
 </html>
