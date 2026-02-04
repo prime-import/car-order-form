@@ -1,49 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Подбор автомобиля</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f6f7fb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 28px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: #666;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #ff6b00;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 8px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff6b00, #ff8a33);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Подбор автомобиля</h1>
+    <div class="subtitle">Авто из США, Китая и Кореи под ваш бюджет</div>
+
+    <form id="carForm">
+
+      <div class="field">
+        <label for="name">Имя</label>
+        <input id="name" type="text" required>
+      </div>
+
+      <div class="field">
+        <label for="phone">Телефон</label>
+        <input id="phone" type="tel" required>
+      </div>
+
+      <div class="field">
+        <label for="telegram">Telegram</label>
+        <input id="telegram" type="text">
+      </div>
+
+      <div class="field">
+        <label for="from">Откуда автомобиль</label>
+        <select id="from" required>
+          <option value="">Выберите страну</option>
+          <option value="США">США</option>
+          <option value="Корея">Корея</option>
+          <option value="Китай">Китай</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="car">Марка / модель</label>
+        <input id="car" type="text">
+      </div>
+
+      <div class="field">
+        <label for="budget">Бюджет (₽)</label>
+        <input id="budget" type="number">
+      </div>
+
+      <button type="submit">Оставить заявку</button>
+      <div class="note">Менеджер свяжется с вами в ближайшее время</div>
+    </form>
+  </div>
+
 <script>
 document.getElementById('carForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const data = {
-    name: document.getElementById('name').value,
-    phone: document.getElementById('phone').value,
-    telegram: document.getElementById('telegram').value,
-    from: document.getElementById('from').value,
-    car: document.getElementById('car').value,
-    budget: document.getElementById('budget').value
-  };
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const telegram = document.getElementById('telegram').value;
+  const from = document.getElementById('from').value;
+  const car = document.getElementById('car').value;
+  const budget = document.getElementById('budget').value;
 
-  const WEBHOOK = 'https://b24-ynu924.bitrix24.ru/rest/1/oj5dbvbaueer7z1g/crm.lead.add.json';
-
-  const body = {
-    fields: {
-      TITLE: `Заявка: ${data.name}`,
-      NAME: data.name,
-      PHONE: [
-        {
-          VALUE: data.phone,
-          VALUE_TYPE: "WORK"
-        }
-      ],
-      COMMENTS:
-        `Telegram: ${data.telegram}\n` +
-        `Откуда авто: ${data.from}\n` +
-        `Марка / модель: ${data.car}\n` +
-        `Бюджет: ${data.budget} ₽`
-    }
-  };
-
-  fetch(WEBHOOK, {
+  fetch('https://b24-ynu924.bitrix24.ru/rest/1/oj5dbvbaueer7z1g/crm.lead.add.json', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    body: JSON.stringify({
+      fields: {
+        TITLE: 'Заявка: ' + name,
+        NAME: name,
+        PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
+        COMMENTS:
+          'Telegram: ' + telegram + '\n' +
+          'Откуда авто: ' + from + '\n' +
+          'Марка / модель: ' + car + '\n' +
+          'Бюджет: ' + budget + ' ₽'
+      }
+    })
   })
-  .then(response => response.json())
   .then(() => {
     alert('Заявка отправлена!');
     document.getElementById('carForm').reset();
   })
-  .catch(error => {
-    console.error(error);
+  .catch(() => {
     alert('Ошибка отправки');
   });
 });
 </script>
+
+</body>
+</html>
