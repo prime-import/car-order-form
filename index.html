@@ -1,199 +1,55 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Заказать авто</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
-
-:root {
-  --accent: #ff6b00;
-  --accent-dark: #e65b00;
-  --bg-light: #f8f9fb;
-  --card-bg: #ffffff;
-  --shadow: rgba(0,0,0,0.15);
-  --gray: #777777;
-}
-
-* { box-sizing: border-box; margin:0; padding:0; }
-body {
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-light);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.card {
-  background: var(--card-bg);
-  border-radius: 24px;
-  padding: 40px 30px;
-  width: 100%;
-  max-width: 440px;
-  box-shadow: 0 20px 40px var(--shadow);
-  animation: fadeIn 0.7s ease;
-}
-
-@keyframes fadeIn { from { opacity:0; transform: translateY(30px);} to { opacity:1; transform: translateY(0);} }
-
-h1 {
-  text-align: center;
-  margin-bottom: 8px;
-  font-size: 28px;
-  color: #222;
-}
-
-.subtitle {
-  text-align: center;
-  font-size: 15px;
-  color: var(--gray);
-  margin-bottom: 30px;
-}
-
-.field { margin-bottom: 20px; }
-.field label {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: var(--gray);
-}
-.field input, .field select {
-  width: 100%;
-  padding: 14px 18px;
-  border-radius: 14px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  transition: 0.3s;
-}
-.field input:focus, .field select:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(255,107,0,0.2);
-}
-
-button {
-  width: 100%;
-  padding: 16px;
-  border-radius: 16px;
-  border: none;
-  background: linear-gradient(135deg, var(--accent), #ff8a33);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(255,107,0,0.35);
-}
-
-.footer-note {
-  font-size: 12px;
-  color: #aaa;
-  text-align: center;
-  margin-top: 14px;
-}
-</style>
-</head>
-<body>
-
-<div class="card">
-  <h1>Подбор автомобиля</h1>
-  <div class="subtitle">Авто из США, Китая и Кореи под ваш бюджет</div>
-
-  <form id="carForm">
-
-    <div class="field">
-      <label>Имя</label>
-      <input type="text" id="name" placeholder="Ваше имя" required>
-    </div>
-
-    <div class="field">
-      <label>Телефон</label>
-      <input type="tel" id="phone" placeholder="+7 ___ ___‑__‑__" required>
-    </div>
-
-    <div class="field">
-      <label>Telegram</label>
-      <input type="text" id="telegram" placeholder="@username" required>
-    </div>
-
-    <div class="field">
-      <label>Откуда автомобиль</label>
-      <select id="from" required>
-        <option value="">Выберите страну</option>
-        <option value="США">США</option>
-        <option value="Корея">Корея</option>
-        <option value="Китай">Китай</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Марка / модель</label>
-      <input type="text" id="car" placeholder="Например: BMW X5">
-    </div>
-
-    <div class="field">
-      <label>Бюджет (₽)</label>
-      <input type="number" id="budget" placeholder="3 500 000">
-    </div>
-
-    <button type="submit">Оставить заявку</button>
-    <div class="footer-note">Менеджер свяжется с вами в ближайшее время</div>
-  </form>
-</div>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-const tg = window.Telegram.WebApp;
-
-document.getElementById('carForm').addEventListener('submit', async e => {
+document.getElementById('carForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const data = {
-    name: document.getElementById('name').value,
-    phone: document.getElementById('phone').value,
-    telegram: document.getElementById('telegram').value,
-    from: document.getElementById('from').value,
-    car: document.getElementById('car').value,
-    budget: document.getElementById('budget').value
-  };
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const telegram = document.getElementById('telegram').value.trim();
+  const from = document.getElementById('from').value;
+  const car = document.getElementById('car').value.trim();
+  const budget = document.getElementById('budget').value.trim();
 
   const WEBHOOK = 'https://b24-ynu924.bitrix24.ru/rest/1/oj5dbvbaueer7z1g/crm.lead.add.json';
 
   const body = {
     fields: {
-      TITLE: `Заявка: ${data.name}`,
-      NAME: data.name,
-      PHONE: [{ VALUE: data.phone, VALUE_TYPE: "WORK" }],
-      COMMENTS: `Telegram: ${data.telegram}\nОткуда авто: ${data.from}\nМарка / модель: ${data.car}\nБюджет: ${data.budget} ₽`
+      TITLE: 'Заявка на подбор авто',
+      NAME: name,
+      PHONE: [
+        {
+          VALUE: phone,
+          VALUE_TYPE: 'WORK'
+        }
+      ],
+      COMMENTS:
+        'Telegram: ' + telegram + '\n' +
+        'Откуда авто: ' + from + '\n' +
+        'Марка / модель: ' + car + '\n' +
+        'Бюджет: ' + budget
     }
   };
 
   try {
-    const res = await fetch(WEBHOOK, {
+    const response = await fetch(WEBHOOK, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(body)
     });
 
-    if(res.ok){
+    const result = await response.json();
+
+    if (result.result) {
       alert('Заявка отправлена!');
-      tg.close();
     } else {
-      alert('Ошибка отправки, попробуйте позже');
-      console.error(await res.text());
+      alert('Ошибка Bitrix. Проверь вебхук.');
+      console.error(result);
     }
-  } catch(err){
-    console.error(err);
-    alert('Ошибка сети');
+
+  } catch (error) {
+    console.error(error);
+    alert('Ошибка соединения');
   }
 });
 </script>
-
-</body>
-</html>
